@@ -1,9 +1,5 @@
 DROP TABLE IF EXISTS pizero;
 CREATE TABLE pizero (
 	temp VARCHAR(10) NOT NULL,
-	timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+	timestamp DATETIME DEFAULT (DATETIME('now', 'localtime'))
 );
-
-INSERT INTO pizero (temp) VALUES ("40'C");
-INSERT INTO pizero (temp) VALUES ("42'C");
-INSERT INTO pizero (temp) VALUES ("41'C");
