@@ -10,6 +10,12 @@ prov: ## provisions venv with server dependencies
 	pip install -r requirements.txt && \
 	deactivate
 
+.PHONY: run
+run: ## runs the server for testing
+	. ./venv/bin/activate && \
+	python src/hello.py && \
+	deactivate
+
 .PHONY: help
 help: ## show this help
 	@egrep -h '\s##\s' $(MAKEFILE_LIST) | \
