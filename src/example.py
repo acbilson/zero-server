@@ -10,25 +10,26 @@ if __name__ == "__main__":
 
     Base = declarative_base()
 
-    class Pizero(Base):
-        __tablename__ = "pizero"
+    class Temperature(Base):
+        __tablename__ = "temperature"
 
         rowid = Column(Integer, primary_key=True)
-        temp = Column(Text)
+        celsius = Column(Text)
         timestamp = Column(DateTime, server_default=FetchedValue())
 
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    initial_result = session.query(Pizero).all()
+    result = run(["/opt/vc/bin/vcgencmd", "measure_temp"], capture_output=True, text=True)
+    reading = result.stdout.strip().split("=")[1]
+    new_record = Temperature(celsius=reading)
+    session.add(new_record)
+    session.commit()
+
+    initial_result = session.query(Temperature).all()
 
     for row in initial_result:
         print("rowid: ", row.rowid)
-        print("temp: ", row.temp)
+        print("temp: ", row.celsius)
         print("timestamp: ", row.timestamp)
 
-    result = run(["/opt/vc/bin/vcgencmd", "measure_temp"], capture_output=True, text=True)
-    temp_reading = result.stdout.strip().split("=")[1]
-    new_record = Pizero(temp=temp_reading)
-    session.add(new_record)
-    session.commit()

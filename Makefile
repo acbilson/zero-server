@@ -4,22 +4,22 @@
 init: ## initializes python venv
 	python3 -m venv venv
 
+.PHONY: init_db
+init_db: ## initializes the sqlite db
+	mkdir -p ./db && \
+	sqlite3 db/temperature.sqlite < db_init.sql
+
 .PHONY: prov init init_db
 prov: ## provisions venv with server dependencies
 	. ./venv/bin/activate && \
 	pip install -r requirements.txt && \
 	deactivate
 
-.PHONY: run
-run: ## runs the server for testing
+.PHONY: serve
+serve: ## serves a datasette server for local network viewing
 	. ./venv/bin/activate && \
-	python src/hello.py && \
+	datasette serve -h 0.0.0.0 -p 8080 -i db/temperature.sqlite
 	deactivate
-
-.PHONY: init_db
-init_db: ## initializes the sqlite db
-	mkdir -p ./db && \
-	sqlite3 db/temperature.sqlite < db.init
 
 .PHONY: test
 test: ## runs the example script for testing
